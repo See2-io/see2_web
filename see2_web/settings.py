@@ -37,8 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'see2_web.see2_templates',
-    'see2_web.apps.see2',
+    'see2_templates',
+    'apps.see2',
 ]
 
 MIDDLEWARE = [

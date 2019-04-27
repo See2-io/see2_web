@@ -25,7 +25,7 @@ SECRET_KEY = 'dg_vp7n!e+vouz9dy6v4z%!da4-q1=l2e!91odmod%bh%6zdgx'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '[::1]', '.see2.io']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '[::1]', '.see2.io', 'see2.pythonanywhere.com',]
 
 
 # Application definition

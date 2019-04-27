@@ -1,3 +1,5 @@
+apps/see2/migrations/
+see2_templates/migrations/
 venv/
 .idea/
 *.pyc

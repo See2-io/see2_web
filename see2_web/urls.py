@@ -16,9 +16,19 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views
+from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('accounts/login/', views.LoginView.as_view(), name='login'),
-    path('', include('apps.see2.urls'))
+    path('users/', include('django.contrib.auth.urls')),
+    path('accounts/', include('allauth.urls')),
+    path('dashboard/', include('dashboard.urls')),
+    path('settings/', include('users.urls')),
+    path('', include('pages.urls')),
 ]
+
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns = [
+        path('__debug__/', include(debug_toolbar.urls)),
+] + urlpatterns

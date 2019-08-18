@@ -11,22 +11,32 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+import environ
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+env = environ.Env(
+    SEE2_WEB_SECRET_KEY=str,
+    DEBUG=(bool, False),
+    ALLOWED_HOSTS=(list, ['127.0.0.1:8000']),
+    DATABASE_URL=str,
+)
+
+root = environ.Path(__file__) - 3  # get root of the project
+environ.Env.read_env(os.path.join(BASE_DIR, 'see2_web/.env'))
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'dg_vp7n!e+vouz9dy6v4z%!da4-q1=l2e!91odmod%bh%6zdgx'
+SECRET_KEY = env.str('SEE2_WEB_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool('DEBUG')
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '[::1]', '.see2.io', 'see2.pythonanywhere.com',]
-
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 
 # Application definition
 
@@ -37,14 +47,24 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'see2_templates',
-    'apps.see2',
+    'django.contrib.sites',
+
+    # Third party
+    'allauth',
+    'allauth.account',
+    'crispy_forms',
+    'debug_toolbar',
+
+    # Local
+    'users',
+    'pages',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -121,6 +141,43 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
-
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+# STATICFILES_DIRS = []
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static")
+]
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+# Enabled for django-debug-toolbar to work
+# https://docs.djangoproject.com/en/2.2/ref/settings/#internal-ips
+INTERNAL_IPS = ['127.0.0.1']
+
+# Use this to turn OFF the Django Debug Toolbar
+DEBUG_TOOLBAR_CONFIG = {
+    'SHOW_TOOLBAR_CALLBACK': lambda r: False,  # disables it
+}
+
+AUTH_USER_MODEL = 'users.CustomUser'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
+# Django-Allauth Config
+LOGIN_REDIRECT_URL = 'home'
+ACCOUNT_LOGOUT_REDIRECT_URL = 'home'
+
+AUTHENTICATION_BACKENDS = (
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+)
+
+SITE_ID = 1
+
+ACCOUNT_SESSION_REMEMBER = True
+ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = True
+ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_AUTHENTICATION_METHOD = 'username'
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
